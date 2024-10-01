@@ -1,12 +1,15 @@
 #!/usr/bin/python3
-import pandas as pd
-import tmdbsimple as tmdb
+import dotenv
+import os
+import pandas
+import tmdbsimple
 
+dotenv.load_dotenv()
 # Initialize TMDb API
-tmdb.API_KEY = 'YOUR_TMDB_API_KEY'  # Get your API key from https://www.themoviedb.org
+tmdbsimple.API_KEY = os.getenv('TMDB_API_KEY')
 
 # Read Netflix CSV
-df = pd.read_csv('netflix_watch_history.csv')
+df = pandas.read_csv('netflix_watch_history.csv')
 
 # Prepare a list to store the results
 results = []
@@ -16,7 +19,7 @@ for index, row in df.iterrows():
     title = row['Title']
     
     # Search for the movie in TMDb
-    search = tmdb.Search()
+    search = tmdbsimple.Search()
     response = search.movie(query=title)
     
     if search.results:
@@ -33,9 +36,5 @@ for index, row in df.iterrows():
         })
 
 # Create a DataFrame from the results and export to CSV
-output_df = pd.DataFrame(results)
+output_df = pandas.DataFrame(results)
 output_df.to_csv('tmdb_watch_history.csv', index=False)
-
-print("Conversion completed! File saved as 'tmdb_watch_history.csv'.")
-
-
